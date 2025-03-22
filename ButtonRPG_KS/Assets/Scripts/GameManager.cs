@@ -6,11 +6,26 @@ using UnityEngine.PlayerLoop;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Player player;
-    [SerializeField] private Enemy[] enemies;
-    private Enemy currentEnemy;
+    [SerializeField] private Character player;
+    [SerializeField] private Character[] enemies;
+    private Character currentEnemy;
     
     [SerializeField] private TMP_Text playerNameText, playerHealthText, enemyNameText, enemyHealthText;
+    
+    
+    private static GameManager _instance;
+    public static GameManager Instance { get { return _instance; } }
+
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        } else {
+            _instance = this;
+        }
+    }
     
     private void Start()
     {
@@ -20,7 +35,7 @@ public class GameManager : MonoBehaviour
         InitialiseEnemy();
     }
 
-    private void InitialiseEnemy()
+    public void InitialiseEnemy()
     {
         currentEnemy = enemies[Random.Range(0, enemies.Length)];
         
@@ -34,13 +49,10 @@ public class GameManager : MonoBehaviour
         currentEnemy.GetHit(playerDamage);
         int enemyDamage = currentEnemy.Attack();
         player.GetHit(enemyDamage);
-        
-        UpdateText();
     }
 
-    private void UpdateText()
+    public void GameOver()
     {
-        playerHealthText.text = "Health: " + player.Health;
-        enemyHealthText.text = "Health: " + currentEnemy.Health;
+        print("~GAME OVER~");
     }
 }

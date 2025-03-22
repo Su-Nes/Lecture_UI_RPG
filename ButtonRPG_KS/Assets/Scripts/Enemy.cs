@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Enemy : Character
 {
-    [SerializeField] protected int aggression = 10;
+    [SerializeField] protected int experienceReward = 10;
 
-    public enum EnemyType
+    protected override void Die()
     {
-        Goblin,
-        Insect,
-        Mutant,
-        Dinosaur
+        FindObjectOfType<Player>().IncreaseExperience(experienceReward);
+        
+        GameManager.Instance.InitialiseEnemy();
     }
-
-    [SerializeField] private EnemyType type;
 }

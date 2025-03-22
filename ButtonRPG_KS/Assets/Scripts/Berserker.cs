@@ -8,7 +8,7 @@ public class Berserker : Enemy
     
     public override int Attack()
     {
-        aggression += aggressionGain;
-        return aggression / 10;
+        strength += aggressionGain;
+        return strength / 10;
     }
 }
