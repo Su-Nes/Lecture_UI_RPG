@@ -4,7 +4,9 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
+    public string weaponName;
     [SerializeField] private int minDamage, maxDamage;
+    
 
     public int GetDamage()
     {

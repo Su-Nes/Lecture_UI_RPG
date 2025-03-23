@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public abstract class Character : MonoBehaviour
 {
@@ -12,42 +13,66 @@ public abstract class Character : MonoBehaviour
     protected int health;
     public int Health { get => health; }
     
-    [SerializeField] protected TMP_Text strengthText;
     [SerializeField] protected int strength;
-    [SerializeField] protected TMP_Text armorValueText;
-    [SerializeField] protected int baseArmorValue;
+    public int Strength { get => strength; }
+    
+    [SerializeField] protected int armorClass;
+    public int ArmorClass { get => armorClass; }
     
     [SerializeField] private Weapon currentWeapon;
     public Weapon ActiveWeapon { get { return currentWeapon; } }
 
     
-    private void Start()
+    public virtual void Awake()
     {
         health = maxHealth;
     }
     
     public virtual int Attack()
     {
-        print(name + " is attacking!");
         return currentWeapon.GetDamage() + strength;
     }
 
-    public void GetHit(int damage)
+    public virtual void GetHit(int damage, string hitCulprit = "Character")
     {
-        health -= damage;
-        print(name + " got hit for " + damage + " damage! Current health = " + health);
+        CombatLog.Instance.AddLog($"{hitCulprit} tries to hit {charName}!");
+
+        if (GameManager.RollD20(hitCulprit) >= armorClass) // roll for the attack hitting like it's DnD
+        {
+            health -= damage;
+            CombatLog.Instance.AddLog($"{charName} got hit for {damage} damage!");
+        }
+        else
+        {
+            CombatLog.Instance.AddLog($"{hitCulprit}'s attack misses!");
+        }
+        
+        
+        if (health <= 0)
+        {
+            Die();
+        }
     }
     
-    public void GetHit(Weapon weapon)
+    public virtual void GetHit(int damage, Enemy hitCulprit)
     {
-        health -= weapon.GetDamage();
-        print(name + " got hit by" + weapon.name + "! Current health = " + health);
-    }
+        CombatLog.Instance.AddLog($"{hitCulprit.charName} tries to hit {charName}!");
 
-    protected virtual void UpdateCharacterText()
-    {
-        strengthText.text = $"Strength: {strength}";
-        armorValueText.text = $"Armor value: {armorValueText}";
+        if (GameManager.RollD20(hitCulprit.CharName) >= armorClass) // roll for the attack hitting like it's DnD
+        {
+            health -= damage;
+            CombatLog.Instance.AddLog($"{charName} got hit for {damage} damage by {hitCulprit.CharName}'s {hitCulprit.ActiveWeapon.weaponName}!");
+        }
+        else
+        {
+            CombatLog.Instance.AddLog($"{hitCulprit}'s attack misses!");
+        }
+        
+        
+        if (health <= 0)
+        {
+            Die();
+        }
     }
     
     protected abstract void Die();

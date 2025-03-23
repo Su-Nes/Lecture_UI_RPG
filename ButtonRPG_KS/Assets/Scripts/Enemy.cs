@@ -9,7 +9,8 @@ public class Enemy : Character
     protected override void Die()
     {
         FindObjectOfType<Player>().IncreaseExperience(experienceReward);
-        
+
+        CombatLog.Instance.AddLog($"{charName} has been slain!");
         GameManager.Instance.InitialiseEnemy();
     }
 }

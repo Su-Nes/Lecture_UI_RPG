@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class Berserker : Enemy
 {
-    [SerializeField] private int aggressionGain = 5;
+    [SerializeField] private int strengthGain = 5;
+    private int additionalStrength;
+    
+    public override void Awake()
+    {
+        health = maxHealth;
+        additionalStrength = 0;
+    }
     
     public override int Attack()
     {
-        strength += aggressionGain;
-        return strength / 10;
+        CombatLog.Instance.AddLog($"{charName} flexes and gains {strengthGain} strength!");
+        additionalStrength += strengthGain;
+        return ActiveWeapon.GetDamage() + strength + additionalStrength;
     }
 }

@@ -22,6 +22,12 @@ public class CombatLog : MonoBehaviour
 
     public void AddLog(string log)
     {
-        logText.text += log;
+        print(log);
+        logText.text += $"{log}\n";
+    }
+
+    public void ClearLogs()
+    {
+        logText.text = "";
     }
 }
